@@ -50,10 +50,8 @@ function App() {
   };
 
   React.useEffect(() => {
-    if (navigator.requestMIDIAccess) {
-      console.log("есть поддержка");
-    } else {
-      console.log("нет поддержки");
+    if (!navigator.requestMIDIAccess) {
+      setStatus(3);
       return;
     }
 
@@ -89,6 +87,10 @@ function App() {
   };
 
   const isProgram = pad.program !== null;
+
+  if (status === 3) {
+    return <Wrapper>WebMIDI is not supported in this browser.</Wrapper>;
+  }
 
   if (status === 1) {
     return (
