@@ -7,6 +7,7 @@ import { padReducer, initialState } from "./pad";
 import { NAME, NN_INVERT, MM_INVERT } from "./constants";
 
 import { Pad } from "./components/Pad";
+import { Program, Button, Group, Label } from "./styles";
 
 function App() {
   const outputRef = React.useRef();
@@ -32,7 +33,6 @@ function App() {
     const outputs = midiAccess.outputs;
 
     for (const input of inputs.values()) {
-      console.log(input?.data);
       input.onmidimessage = onMIDIMessage;
     }
 
@@ -82,20 +82,30 @@ function App() {
       <header className="App-header">
         {isProgram && (
           <>
-            <h1>Programa {pad.program + 1}</h1>
+            <Program>Program {pad.program + 1}</Program>
             <Pads pad={pad} onChangePad={onChangePad} />
           </>
         )}
-        <button onClick={onChange}>get current</button>
-        <button onClick={onChangePG(0)}>pg1</button>
-        <button onClick={onChangePG(1)}>pg2</button>
-        <button onClick={onChangePG(2)}>pg3</button>
-        <button onClick={onChangePG(3)}>pg4</button>
-
-        <button onClick={onChangeSaveTo(0)}>save pg1</button>
-        <button onClick={onChangeSaveTo(1)}>save pg2</button>
-        <button onClick={onChangeSaveTo(2)}>save pg3</button>
-        <button onClick={onChangeSaveTo(3)}>save pg4</button>
+        <Group>
+          <Label></Label>
+          <Button onClick={onChange}>get current program</Button>
+        </Group>
+        <Group>
+          <Label>Load from</Label>
+          <Button onClick={onChangePG(0)}>p1</Button>
+          <Button onClick={onChangePG(1)}>p2</Button>
+          <Button onClick={onChangePG(2)}>p3</Button>
+          <Button onClick={onChangePG(3)}>p4</Button>
+        </Group>
+        {isProgram && (
+          <Group>
+            <Label>Save to</Label>
+            <Button onClick={onChangeSaveTo(0)}>p1</Button>
+            <Button onClick={onChangeSaveTo(1)}>p2</Button>
+            <Button onClick={onChangeSaveTo(2)}>p3</Button>
+            <Button onClick={onChangeSaveTo(3)}>p4</Button>
+          </Group>
+        )}
       </header>
     </div>
   );

@@ -122,4 +122,40 @@ const NOTE_TO_NAME = {
   108: "C8",
 };
 
-export { PAD, NAME, NN, MM, NN_INVERT, MM_INVERT, NOTE_TO_NAME };
+const sensOptions = [
+  { title: "sens 0", value: "0" },
+  { title: "sens 1", value: "1" },
+  { title: "sens 2", value: "2" },
+  { title: "sens 3", value: "3" },
+];
+
+const dynOptions = [
+  { title: "dyn 0", value: "0" },
+  { title: "dyn 1", value: "1" },
+  { title: "dyn 2", value: "2" },
+  { title: "dyn 3", value: "3" },
+];
+
+const limOptions = [
+  { title: "lim 0", value: "0" },
+  { title: "lim 1", value: "1" },
+  { title: "lim 2", value: "2" },
+  { title: "lim 3", value: "3" },
+  { title: "lim 4", value: "4" },
+  { title: "lim 5", value: "5" },
+  { title: "lim 6", value: "6" },
+  { title: "lim 7", value: "7" },
+];
+
+export {
+  PAD,
+  NAME,
+  NN,
+  MM,
+  NN_INVERT,
+  MM_INVERT,
+  NOTE_TO_NAME,
+  sensOptions,
+  dynOptions,
+  limOptions,
+};

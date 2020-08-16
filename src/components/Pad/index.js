@@ -1,33 +1,15 @@
 import React from "react";
 
-import { NOTE_TO_NAME } from "../../constants";
-import { ComboBox } from "../ComboBox";
+import {
+  NOTE_TO_NAME,
+  sensOptions,
+  dynOptions,
+  limOptions,
+} from "../../constants";
 import { getValue } from "../../helpers";
 
-const sensOptions = [
-  { title: "0", value: "0" },
-  { title: "1", value: "1" },
-  { title: "2", value: "2" },
-  { title: "3", value: "3" },
-];
-
-const dynOptions = [
-  { title: "0", value: "0" },
-  { title: "1", value: "1" },
-  { title: "2", value: "2" },
-  { title: "3", value: "3" },
-];
-
-const limOptions = [
-  { title: "0", value: "0" },
-  { title: "1", value: "1" },
-  { title: "2", value: "2" },
-  { title: "3", value: "3" },
-  { title: "4", value: "4" },
-  { title: "5", value: "5" },
-  { title: "6", value: "6" },
-  { title: "7", value: "7" },
-];
+import { Item } from "../Item";
+import { Wrapper, Header, Separator } from "./styles";
 
 const noteOptions = Object.keys(NOTE_TO_NAME).map((value) => {
   return { title: `${value} ${NOTE_TO_NAME[value]}`, value };
@@ -89,28 +71,39 @@ const Pad = React.memo((props) => {
   };
 
   return (
-    <div className="pad">
-      <h1>{name}</h1>
-      <p className="note">
-        {note} ({NOTE_TO_NAME[note]})
-        <ComboBox options={noteOptions} value={note} onChange={onChangeNote} />
-      </p>
-      <p className="value">
-        {value} {format(value)}
-      </p>
-      <p className="sens">
-        sens: {format(sens)}
-        <ComboBox options={sensOptions} value={sens} onChange={onChangeSens} />
-      </p>
-      <p className="dyn">
-        dyn: {format(dyn)}
-        <ComboBox options={dynOptions} value={dyn} onChange={onChangeDyn} />
-      </p>
-      <p className="lim">
-        lim: {format(lim)}
-        <ComboBox options={limOptions} value={lim} onChange={onChangeLim} />
-      </p>
-    </div>
+    <Wrapper>
+      <Header>{name}</Header>
+      <Item
+        // title={`${note} (${NOTE_TO_NAME[note]})`}
+        title="note"
+        options={noteOptions}
+        value={note}
+        onChange={onChangeNote}
+      />
+      
+      <Separator />
+
+      <Item
+        title={`sens (${sens})`}
+        options={sensOptions}
+        value={sens}
+        onChange={onChangeSens}
+      />
+
+      <Item
+        title={`response (${dyn})`}
+        options={dynOptions}
+        value={dyn}
+        onChange={onChangeDyn}
+      />
+
+      <Item
+        title={`limiter mode (${lim})`}
+        options={limOptions}
+        value={lim}
+        onChange={onChangeLim}
+      />
+    </Wrapper>
   );
 });
 

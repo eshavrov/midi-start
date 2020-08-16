@@ -48,7 +48,7 @@ const padReducer = (state = initialState, action) => {
     case 0xbf: {
       if (action.code === 0x59) {
         const program = action.value & 0b011;
-
+        
         return {
           ...state,
           program,

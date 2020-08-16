@@ -11,7 +11,7 @@ const ComboBox = (props) => {
   }, [onChange]);
 
   return (
-    <select defaultValue={value} onChange={_onChange}>
+    <select className="select-css" defaultValue={value} onChange={_onChange}>
       {options.map(({ title, value: optionValue }, index) => (
         <option key={index} value={optionValue}>
           {title}
