@@ -1,9 +1,28 @@
 import styled from "styled-components";
 
-const Program = styled.h2`
-color: #ccc;
+const Wrapper = styled.header`
+  text-align: center;
+  background-color: #252727;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  width: 100vw;
 `;
 
+const PadGroup = styled.section`
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+`;
+
+const Program = styled.h2`
+  color: #ccc;
+`;
 
 const Button = styled.button`
   border: none;
@@ -12,7 +31,7 @@ const Button = styled.button`
   cursor: pointer;
   padding: 8px 24px;
   display: inline-block;
-  margin: 8px;
+  margin:6px 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -37,12 +56,16 @@ const Button = styled.button`
 
 const Group = styled.div`
   display: flex;
-`;
-const Label = styled.div`
-	font-size: 16px;
-	color: #aaa;
-  margin: 16px 8px 0 0;
-  width: 80px;
+  flex-wrap: wrap;
+  margin-bottom:10px;
 `;
 
-export { Program, Button, Group, Label };
+const Label = styled.div`
+  font-size: 16px;
+  color: #aaa;
+  margin: 16px 8px 0 0;
+  width: 80px;
+  text-align: right;
+`;
+
+export { Wrapper, PadGroup, Program, Button, Group, Label };
