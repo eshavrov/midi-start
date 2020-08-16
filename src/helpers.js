@@ -1,10 +1,11 @@
 const onMIDIMessageLog = (event) => {
-  var str =
-    "MIDI message received at timestamp " +
-    event.timestamp +
-    "[" +
-    event.data.length +
-    " bytes]: ";
+  // var str =
+  //   "MIDI message received at timestamp " +
+  //   event.timestamp +
+  //   "[" +
+  //   event.data.length +
+  //   " bytes]: ";
+  let str ="<< ";
 
   for (var i = 0; i < event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
