@@ -1,6 +1,6 @@
 import React from "react";
 
-import { onMIDIMessageLog, onMIDIFailure } from "./helpers";
+import { onMIDIMessageLog, onMIDIFailure, send } from "./helpers";
 import { padReducer, initialState } from "./pad";
 import { NAME, NN_INVERT, MM_INVERT } from "./constants";
 
@@ -65,25 +65,25 @@ function App() {
 
   const onChange = React.useCallback(() => {
     // Получение серийного номера
-    outputRef.current.send([0xbf, 0x5a, 0x22]);
+    send(outputRef.current, [0xbf, 0x5a, 0x22]);
 
     // Запрос на выдачу текущих настроек
-    outputRef.current.send([0xbf, 0x5a, 0x0e]);
+    send(outputRef.current, [0xbf, 0x5a, 0x0e]);
   }, []);
 
-  const onChangePG = (pg) => () => {
-    outputRef.current.send([0xc9, pg]);
-    outputRef.current.send([0xbf, 0x5a, 0x0e]);
+  const onChangePG = (program) => () => {
+    send(outputRef.current, [0xc9, program]);
+    send(outputRef.current, [0xbf, 0x5a, 0x0e]);
   };
 
-  const onChangeSaveTo = (pgIndex) => () => {
-    outputRef.current.send([0xbf, 0x5a, 0x70 + pgIndex]);
-    outputRef.current.send([0xbf, 0x5a, 0x0e]);
+  const onChangeSaveTo = (programIndex) => () => {
+    send(outputRef.current, [0xbf, 0x5a, 0x70 + programIndex])
+    send(outputRef.current, [0xbf, 0x5a, 0x0e]);
   };
 
   const onChangePad = (id, value) => {
-    outputRef.current.send([0xbf, +id, +value]);
-    setTimeout(() => outputRef.current.send([0xbf, 0x5a, 0x0e]), 250);
+    send(outputRef.current, [0xbf, +id, +value]);
+    setTimeout(() => send(outputRef.current, [0xbf, 0x5a, 0x0e]), 250);
   };
 
   const isProgram = pad.program !== null;

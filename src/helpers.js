@@ -24,4 +24,17 @@ const getValue = ({ sens = 0, dyn = 0, lim = 0 }) => {
   return value;
 };
 
-export { onMIDIMessageLog, onMIDIFailure, getValue };
+const send = (ref, values) => {
+  ref.send(values);
+
+  let str =">>";
+
+  for (var i = 0; i < values.length; i++) {
+    str += "0x" + values[i].toString(16) + " ";
+  }
+
+  console.log(str);
+
+}
+
+export { onMIDIMessageLog, onMIDIFailure, getValue, send };
