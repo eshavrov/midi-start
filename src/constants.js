@@ -123,28 +123,28 @@ const NOTE_TO_NAME = {
 };
 
 const sensOptions = [
-  { title: "sens 0", value: "0" },
-  { title: "sens 1", value: "1" },
-  { title: "sens 2", value: "2" },
-  { title: "sens 3", value: "3" },
+  { title: "LOW", value: "0" },
+  { title: "MEDIUM", value: "1" },
+  { title: "HIGH", value: "2" },
+  { title: "HIGHEST", value: "3" },
 ];
 
 const dynOptions = [
-  { title: "dyn 0", value: "0" },
-  { title: "dyn 1", value: "1" },
-  { title: "dyn 2", value: "2" },
-  { title: "dyn 3", value: "3" },
+  { title: "EXPANDED", value: "0" },
+  { title: "LINEAR", value: "1" },
+  { title: "COMPRESSED", value: "2" },
+  { title: "AMPLIFIED", value: "3" },
 ];
 
 const limOptions = [
-  { title: "lim 0", value: "0" },
-  { title: "lim 1", value: "1" },
-  { title: "lim 2", value: "2" },
-  { title: "lim 3", value: "3" },
-  { title: "lim 4", value: "4" },
-  { title: "lim 5", value: "5" },
-  { title: "lim 6", value: "6" },
-  { title: "lim 7", value: "7" },
+  { title: "20..70", value: "0" },
+  { title: "1..70", value: "1" },
+  { title: "1..110", value: "2" },
+  { title: "20..110", value: "3" },
+  { title: "50..110", value: "4" },
+  { title: "50..127", value: "5" },
+  { title: "20..127", value: "6" },
+  { title: "1..127", value: "7" },
 ];
 
 export {

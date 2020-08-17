@@ -91,7 +91,7 @@ const Pad = React.memo((props) => {
       />
 
       <Item
-        title={`response (${dyn})`}
+        title={`dyn (${dyn})`}
         options={dynOptions}
         value={dyn}
         onChange={onChangeDyn}
