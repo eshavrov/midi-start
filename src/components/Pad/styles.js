@@ -1,15 +1,20 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const Wrapper = styled.div`
-  flex: 1 0 200px;
-  background-color: #333;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -4px 0 #222;
-  padding: 20px 16px;
-  margin: 10px;
-  color: #aaa;
-  max-width: 220px;
-  border-radius: 4px;
-`;
+const Wrapper = styled.div(
+  ({ velocity = 0 }) => css`
+    flex: 1 0 200px;
+    background-color: #333;
+    /* box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -4px 0 #222; */
+    padding: 20px 16px;
+    margin: 10px;
+    color: #aaa;
+    max-width: 220px;
+    border-radius: 4px;
+    transition: box-shadow ${velocity === 0 ? 1400 : 100}ms;
+    box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -4px 0 #222,
+      inset 0 -${velocity * 2}px 0 #222;
+  `
+);
 
 const Header = styled.h3`
   padding: 0 0 0px;

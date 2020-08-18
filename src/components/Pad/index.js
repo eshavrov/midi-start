@@ -18,7 +18,18 @@ const noteOptions = Object.keys(NOTE_TO_NAME).map((value) => {
 const format = (value) => `${value.toString(2)} ${value}`;
 
 const Pad = React.memo((props) => {
-  const { nn, mm, name, note, value, sens, dyn, lim, onChange } = props;
+  const {
+    nn,
+    mm,
+    name,
+    note,
+    value,
+    sens,
+    dyn,
+    lim,
+    velocity = 0,
+    onChange,
+  } = props;
 
   const onChangeNote = (value) => {
     if (!onChange) {
@@ -71,7 +82,7 @@ const Pad = React.memo((props) => {
   };
 
   return (
-    <Wrapper>
+    <Wrapper velocity={velocity}>
       <Header>{name}</Header>
       <Item
         // title={`${note} (${NOTE_TO_NAME[note]})`}
@@ -80,7 +91,7 @@ const Pad = React.memo((props) => {
         value={note}
         onChange={onChangeNote}
       />
-      
+
       <Separator />
 
       <Item

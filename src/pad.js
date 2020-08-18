@@ -3,10 +3,10 @@ import { PAD, NN, MM } from "./constants";
 const initialState = {
   program: null,
   pads: {
-    [PAD.A]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0 },
-    [PAD.B]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0 },
-    [PAD.C]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0 },
-    [PAD.D]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0 },
+    [PAD.A]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
+    [PAD.B]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
+    [PAD.C]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
+    [PAD.D]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
   },
 };
 
@@ -43,12 +43,12 @@ const getPad = (state, { code, value }) => {
   return state;
 };
 
-const padReducer = (state = initialState, action) => {
+const padReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case 0xbf: {
       if (action.code === 0x59) {
         const program = action.value & 0b011;
-        
+
         return {
           ...state,
           program,
@@ -61,6 +61,30 @@ const padReducer = (state = initialState, action) => {
       };
     }
 
+    case 0x99:
+    case 0x89: {
+      const currentPads = [];
+
+      Object.keys(state.pads).forEach((key) => {
+        if (+state.pads[key].note === +action.code) {
+          currentPads.push(key);
+        }
+      });
+
+      if (currentPads.length === 0) {
+        return state;
+      }
+
+      const currentPad = currentPads[0];
+
+      return {
+        ...state,
+        pads: {
+          ...state.pads,
+          [currentPad]: { ...state.pads[currentPad], velocity: action.value },
+        },
+      };
+    }
     default: {
       return state;
     }
