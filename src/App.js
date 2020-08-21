@@ -21,6 +21,18 @@ function App() {
       value,
     });
 
+    if (type === 0x99) {
+      setTimeout(
+        () =>
+          padDispatch({
+            type: 0x99,
+            code,
+            value: 0,
+          }),
+        300
+      );
+    }
+
     onMIDIMessageLog(event);
   };
 

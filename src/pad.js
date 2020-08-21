@@ -61,8 +61,7 @@ const padReducer = (state = initialState, action = {}) => {
       };
     }
 
-    case 0x99:
-    case 0x89: {
+    case 0x99: {
       const currentPads = [];
 
       Object.keys(state.pads).forEach((key) => {
