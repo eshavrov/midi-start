@@ -1,6 +1,8 @@
 import { PAD, NN, MM } from "./constants";
 
 const initialState = {
+  serialMode: false,
+  serial: "        ",
   program: null,
   pads: {
     [PAD.A]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
@@ -8,6 +10,14 @@ const initialState = {
     [PAD.C]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
     [PAD.D]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
   },
+};
+
+const replaceAt = (string, index, replacement) => {
+  return (
+    string.substr(0, index) +
+    replacement +
+    string.substr(index + replacement.length)
+  );
 };
 
 const getPad = (state, { code, value }) => {
@@ -45,7 +55,24 @@ const getPad = (state, { code, value }) => {
 
 const padReducer = (state = initialState, action = {}) => {
   switch (action.type) {
+    case "serial_mode": {
+      return { ...state, serialMode: true };
+    }
+
     case 0xbf: {
+      if (state.serialMode === true && action.code >= 0x50 && action.code <= 0x57) {
+        
+        const index = action.code - 0x50;
+        const char = String.fromCharCode(action.value);
+        const serial = replaceAt(state.serial, index, char);
+        const serialMode = action.code !== 0x57;
+        return {
+          ...state,
+          serialMode,
+          serial,
+        };
+      }
+
       if (action.code === 0x59) {
         const program = action.value & 0b011;
 

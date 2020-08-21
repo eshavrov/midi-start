@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const Wrapper = styled.header`
+  position: relative;
   text-align: center;
   background-color: #252727;
   min-height: 100vh;
@@ -31,7 +32,7 @@ const Button = styled.button`
   cursor: pointer;
   padding: 8px 24px;
   display: inline-block;
-  margin:6px 8px;
+  margin: 6px 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 700;
@@ -57,7 +58,7 @@ const Button = styled.button`
 const Group = styled.div`
   display: flex;
   flex-wrap: wrap;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.div`
@@ -68,4 +69,13 @@ const Label = styled.div`
   text-align: right;
 `;
 
-export { Wrapper, PadGroup, Program, Button, Group, Label };
+const Serial = styled.div`
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  color: #bbb;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+`;
+
+export { Wrapper, PadGroup, Program, Button, Group, Label, Serial };
