@@ -74,10 +74,10 @@ function App() {
   const [status, setStatus] = React.useState(1);
   const [pad, padDispatch] = React.useReducer(padReducer, initialState);
   const [showSettings, setShowSettings] = React.useState(false);
+  const [changed, setChanged] = React.useState(false);
+  const [saved, setSaved] = React.useState(null);
 
   const onStateChange = ({ port }) => {
-    console.log("onStateChange", port.connection);
-
     padDispatch({
       type: "set_mode",
       code: "disabled",
@@ -110,7 +110,6 @@ function App() {
   };
 
   const onMIDISuccess = (midiAccess) => {
-    console.log("midiAccess", midiAccess);
     const inputs = midiAccess.inputs;
     const outputs = midiAccess.outputs;
 
@@ -165,23 +164,28 @@ function App() {
   const onChangePG = (program) => () => {
     send(outputRef.current, [0xc9, program]);
     send(outputRef.current, [0xbf, 0x5a, 0x0e]);
+    setChanged(false);
+    setSaved(null);
   };
 
   const onChangeSaveTo = (programIndex) => () => {
     send(outputRef.current, [0xbf, 0x5a, 0x70 + programIndex]);
     send(outputRef.current, [0xbf, 0x5a, 0x0e]);
+    setChanged(false);
+    setSaved(programIndex + 1);
   };
 
   const onChangePad = (id, value) => {
     send(outputRef.current, [0xbf, +id, +value]);
     setTimeout(() => send(outputRef.current, [0xbf, 0x5a, 0x0e]), 250);
+    setChanged(true);
+    setSaved(null);
   };
 
   const onChangeSendFile = async () => {
     padDispatch({ type: "set_mode", code: "patch" });
 
     const buffer = await readAllBytesAsUInt8Array("./PadStickV01.syx");
-    console.log("buffer", buffer);
 
     padDispatch({ type: "progress", value: 0 });
     send(outputRef.current, new Uint8Array(buffer));
@@ -213,7 +217,6 @@ function App() {
   };
 
   const onChangeCalibrate = (type) => () => {
-    console.log("calibrate", type);
     padDispatch({ type: "set_mode", code: "calibrate", value: type });
 
     switch (type) {
@@ -287,6 +290,8 @@ function App() {
   }
 
   const isCalibrate = ["weak", "medium", "hard"].includes(pad.calibrate);
+  const isChanged = changed;
+  const isSaved = saved;
 
   return (
     <Wrapper>
@@ -299,8 +304,15 @@ function App() {
         <>
           <Serial>
             Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial}&nbsp;
-            Firmware&nbsp;version:&nbsp;{pad.version}&nbsp;
-            Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}&nbsp;
+            Firmware&nbsp;version:&nbsp;{pad.version}&nbsp;&nbsp;
+            {isSaved !== null ? (
+              <>Values saved to program {saved}!</>
+            ) : isChanged ? (
+              <>Values were changed!</>
+            ) : (
+              <>Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}</>
+            )}
+            &nbsp;&nbsp;
             {pad.lastStroke && <>Last stroke: {NOTE_TO_NAME[pad.lastStroke]}</>}
           </Serial>
           <Pads pad={pad} onChangePad={onChangePad} />

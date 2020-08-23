@@ -94,21 +94,21 @@ const Pad = React.memo((props) => {
       <Separator />
 
       <Item
-        title={`sens`}
+        title={`sensitivity`}
         options={sensOptions}
         value={sens}
         onChange={onChangeSens}
       />
 
       <Item
-        title={`dyn`}
+        title={`dynamic response`}
         options={dynOptions}
         value={dyn}
         onChange={onChangeDyn}
       />
 
       <Item
-        title={`limiter mode`}
+        title={`output range`}
         options={limOptions}
         value={lim}
         onChange={onChangeLim}

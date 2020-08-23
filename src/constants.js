@@ -124,27 +124,33 @@ const NOTE_TO_NAME = {
 
 const sensOptions = [
   { title: "LOW", value: "0" },
-  { title: "MEDIUM", value: "1" },
-  { title: "HIGH", value: "2" },
-  { title: "HIGHEST", value: "3" },
+  { title: "HIGH", value: "1" },
 ];
 
 const dynOptions = [
   { title: "EXPANDED", value: "0" },
   { title: "LINEAR", value: "1" },
   { title: "COMPRESSED", value: "2" },
-  { title: "AMPLIFIED", value: "3" },
+  { title: "BOOSTED", value: "3" },
 ];
 
 const limOptions = [
-  { title: "20..70", value: "0" },
-  { title: "1..70", value: "1" },
-  { title: "1..110", value: "2" },
-  { title: "20..110", value: "3" },
-  { title: "50..110", value: "4" },
-  { title: "50..127", value: "5" },
-  { title: "20..127", value: "6" },
-  { title: "1..127", value: "7" },
+  { title: "1..70", value: "0" },
+  { title: "15..70", value: "1" },
+  { title: "25..70", value: "2" },
+  { title: "40..70", value: "3" },
+  { title: "60..70", value: "4" },
+  { title: "60..90", value: "5" },
+  { title: "40..90", value: "6" },
+  { title: "25..90", value: "7" },
+  { title: "15..90", value: "8" },
+  { title: "1..90", value: "9" },
+  { title: "1..110", value: "10" },
+  { title: "1..127", value: "11" },
+  { title: "25..127", value: "12" },
+  { title: "40..127", value: "13" },
+  { title: "60..127", value: "14" },
+  { title: "80..127", value: "15" },
 ];
 
 export {

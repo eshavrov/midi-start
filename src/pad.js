@@ -28,7 +28,6 @@ const replaceAt = (string, index, replacement) => {
 };
 
 const getPad = (state, { code, value }) => {
-  
   if (Object.keys(NN).includes(`${code}`)) {
     const currentPad = NN[code];
 
@@ -43,9 +42,9 @@ const getPad = (state, { code, value }) => {
   if (Object.keys(MM).includes(`${code}`)) {
     const currentPad = MM[code];
 
-    const sensValue = value & 0b011;
-    const dynValue = (value >>> 2) & 0b011;
-    const limValue = (value >>> 4) & 0b0111;
+    const sensValue = value & 0b01;
+    const dynValue = (value >>> 1) & 0b011;
+    const limValue = (value >>> 3) & 0b01111;
 
     return {
       [currentPad]: {
@@ -101,8 +100,6 @@ const padReducer = (state = initialState, action = {}) => {
         };
       }
 
-
-
       return {
         ...state,
         pads: { ...state.pads, ...getPad(state.pads, action) },
@@ -122,9 +119,12 @@ const padReducer = (state = initialState, action = {}) => {
         return state;
       }
 
-      const currentPad = currentPads[0];
       const lastStroke = action.code;
-      console.log(lastStroke);
+
+      const next = currentPads.reduce((acc, pad) => {
+        acc[pad] = { ...state.pads[pad], velocity: action.value };
+        return acc;
+      }, {});
 
       return {
         ...state,
@@ -132,7 +132,7 @@ const padReducer = (state = initialState, action = {}) => {
 
         pads: {
           ...state.pads,
-          [currentPad]: { ...state.pads[currentPad], velocity: action.value },
+          ...next,
         },
       };
     }

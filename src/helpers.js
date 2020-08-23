@@ -1,10 +1,4 @@
 const onMIDIMessageLog = (event) => {
-  // var str =
-  //   "MIDI message received at timestamp " +
-  //   event.timestamp +
-  //   "[" +
-  //   event.data.length +
-  //   " bytes]: ";
   let str ="<< ";
 
   for (var i = 0; i < event.data.length; i++) {
@@ -19,7 +13,7 @@ const onMIDIFailure = () => {
 };
 
 const getValue = ({ sens = 0, dyn = 0, lim = 0 }) => {
-  const value = (lim << 4) + (dyn << 2) + sens;
+  const value = (lim << 3) + (dyn << 1) + sens;
 
   return value;
 };
@@ -28,7 +22,7 @@ const send = (ref,...args) => {
   ref.send(...args);
   const [values] = args;
 
-  let str =">>";
+  let str =">> ";
 
   for (var i = 0; i < values.length; i++) {
     str += "0x" + values[i].toString(16) + " ";
