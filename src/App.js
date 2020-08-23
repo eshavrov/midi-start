@@ -5,6 +5,8 @@ import { padReducer, initialState } from "./pad";
 import { NAME, NN_INVERT, MM_INVERT } from "./constants";
 
 import { Pad } from "./components/Pad";
+import { ProgressBar } from "./components/ProgressBar";
+
 import {
   Wrapper,
   PadGroup,
@@ -14,6 +16,25 @@ import {
   Label,
   Serial,
 } from "./styles";
+
+function timeout(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function readAllBytesAsUInt8Array(path) {
+  var req = new XMLHttpRequest();
+  req.open("GET", path, false);
+  req.overrideMimeType("text/plain; charset=binary-data");
+  req.send(null);
+  if (req.status !== 200) {
+    console.log("error");
+    return null;
+  }
+  var text = req.responseText;
+  var encoder = new TextEncoder("utf-8");
+  var resultArray = encoder.encode(text);
+  return resultArray.buffer;
+}
 
 function App() {
   const outputRef = React.useRef();
@@ -85,7 +106,7 @@ function App() {
 
   const onChange = React.useCallback(() => {
     // Получение серийного номера
-    padDispatch({ type: "serial_mode" });
+    padDispatch({ type: "set_mode", code: "serialMode" });
     send(outputRef.current, [0xbf, 0x5a, 0x22]);
 
     // Запрос на выдачу текущих настроек
@@ -107,7 +128,49 @@ function App() {
     setTimeout(() => send(outputRef.current, [0xbf, 0x5a, 0x0e]), 250);
   };
 
-  const isProgram = pad.program !== null;
+  const onChangeSendFile = async () => {
+    padDispatch({ type: "set_mode", code: "patch" });
+
+    const buffer = readAllBytesAsUInt8Array("./PadStickV01.syx");
+    const step = 256;
+    const length = buffer.byteLength;
+    let pos = 0;
+    padDispatch({ type: "progress", value: 0 });
+
+    do {
+      const dataView = new DataView(
+        buffer,
+        [pos],
+        [Math.min(step, length - pos)]
+      );
+
+      const arr = Array.from({ length: dataView.byteLength }, (_, index) =>
+        dataView.getUint8(index)
+      );
+      console.log("send ->>", arr);
+      // send(outputRef.current, arr;
+
+      await timeout(100);
+      pos += step;
+      padDispatch({ type: "progress", value: Math.min(pos / length, 1) });
+    } while (pos < length);
+
+    await timeout(1000);
+
+    padDispatch({ type: "set_mode", code: "patch", value: false });
+  };
+
+  const isProgram =  pad.program !== null;
+  if (pad.patch) {
+
+    const value = (pad.progress * 100);
+    return (
+      <Wrapper>
+        Updating the device firmware...
+        <ProgressBar value={value} />
+      </Wrapper>
+    );
+  }
 
   if (status === 3) {
     return <Wrapper>WebMIDI is not supported in this browser.</Wrapper>;
@@ -159,6 +222,7 @@ function App() {
           <Button onClick={onChangeSaveTo(3)}>p4</Button>
         </Group>
       )}
+      <Button onClick={onChangeSendFile}>file</Button>
       <Serial>S/N: {pad.serial}</Serial>
     </Wrapper>
   );

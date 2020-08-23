@@ -2,6 +2,8 @@ import { PAD, NN, MM } from "./constants";
 
 const initialState = {
   serialMode: false,
+  path: false,
+  progress: 0,
   serial: "        ",
   program: null,
   pads: {
@@ -55,13 +57,21 @@ const getPad = (state, { code, value }) => {
 
 const padReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case "serial_mode": {
-      return { ...state, serialMode: true };
+    case "progress": {
+      return { ...state, progress: action.value };
+    }
+
+    case "set_mode": {
+      const { code: mode, value = true } = action;
+      return { ...state, [mode]: value };
     }
 
     case 0xbf: {
-      if (state.serialMode === true && action.code >= 0x50 && action.code <= 0x57) {
-        
+      if (
+        state.serialMode === true &&
+        action.code >= 0x50 &&
+        action.code <= 0x57
+      ) {
         const index = action.code - 0x50;
         const char = String.fromCharCode(action.value);
         const serial = replaceAt(state.serial, index, char);
