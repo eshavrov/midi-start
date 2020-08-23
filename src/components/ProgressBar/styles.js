@@ -12,6 +12,7 @@ const Progress = styled.div`
   /* box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3); */
   width: 90%;
 `;
+
 const Value = styled.span`
   display: block;
   height: 100%;

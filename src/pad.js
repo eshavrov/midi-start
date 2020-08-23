@@ -1,6 +1,7 @@
 import { PAD, NN, MM } from "./constants";
 
 const initialState = {
+  disabled: false,
   serialMode: false,
   path: false,
   firmwareVersion: null,

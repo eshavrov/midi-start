@@ -66,7 +66,7 @@ const Group = styled.div`
   margin-bottom: 10px;
   align-items: flex-start;
   ${(props) =>
-    props.list &&
+    props.l &&
     css`
       flex-direction: column;
     `}

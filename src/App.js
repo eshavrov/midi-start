@@ -29,22 +29,22 @@ const messages = {
   weak: (
     <>
       The WEAK stroke calibration is in progress now. Please do a few dozen WEAK
-      strokes on each pad to learn PadStick to recognize them. To terminate this
-      process please press the "Stop Calibration" button.
+      strokes on each pad to learn Pad-Stick to recognize them. To terminate
+      this process please press the "Stop Calibration" button.
     </>
   ),
   medium: (
     <>
       The WEAK stroke calibration is in progress now. Please do a few dozen
-      MEDIUM strokes on each pad to learn PadStick to recognize them. To
+      MEDIUM strokes on each pad to learn Pad-Stick to recognize them. To
       terminate this process please press the "Stop Calibration" button.
     </>
   ),
   hard: (
     <>
       The WEAK stroke calibration is in progress now. Please do a few dozen HARD
-      strokes on each pad to learn PadStick to recognize them. To terminate this
-      process please press the "Stop Calibration" button.
+      strokes on each pad to learn Pad-Stick to recognize them. To terminate
+      this process please press the "Stop Calibration" button.
     </>
   ),
 };
@@ -75,6 +75,16 @@ function App() {
   const [pad, padDispatch] = React.useReducer(padReducer, initialState);
   const [showSettings, setShowSettings] = React.useState(false);
 
+  const onStateChange = ({ port }) => {
+    console.log("onStateChange", port.connection);
+
+    padDispatch({
+      type: "set_mode",
+      code: "disabled",
+      value: port.connection !== "open",
+    });
+  };
+
   const onMIDIMessage = (event) => {
     const [type, code, value] = event.data;
 
@@ -103,6 +113,8 @@ function App() {
     console.log("midiAccess", midiAccess);
     const inputs = midiAccess.inputs;
     const outputs = midiAccess.outputs;
+
+    midiAccess.onstatechange = onStateChange;
 
     if (inputs.size === 0 || outputs.size === 0) {
       setStatus(1);
@@ -230,7 +242,10 @@ function App() {
     return (
       <Wrapper>
         {value === 100 ? (
-          <Text>Firmware image has been uploaded. Please reconnect the USB and wait 25 sec for installation.</Text>
+          <Text>
+            Firmware image has been uploaded. Please reconnect the USB and wait
+            25 sec for installation.
+          </Text>
         ) : (
           <>
             <Text>The Firmware is uploading now. Please wait!</Text>
@@ -263,13 +278,21 @@ function App() {
     );
   }
 
+  if (pad.disabled) {
+    return (
+      <Wrapper>
+        <Text>Opps! No connect with Pad-Stick!</Text>
+      </Wrapper>
+    );
+  }
+
   const isCalibrate = ["weak", "medium", "hard"].includes(pad.calibrate);
 
   return (
     <Wrapper>
       <Top>
         <Logo />
-        <Name>PadStick</Name>
+        <Name>Pad-Stick</Name>
       </Top>
 
       {isProgram && (
@@ -277,13 +300,13 @@ function App() {
           <Serial>
             Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial};
             Firmware&nbsp;version:&nbsp;{pad.version};
-            Settings&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}
+            Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}
           </Serial>
           <Pads pad={pad} onChangePad={onChangePad} />
         </>
       )}
       <Group>
-        <Button onClick={onChange}>get current program</Button>
+        <Button onClick={onChange}>get current values</Button>
       </Group>
       <Label>Load from</Label>
       <Group>
@@ -309,7 +332,7 @@ function App() {
         {isCalibrate ? (
           <>
             <Header>{messages[pad.calibrate]}</Header>
-            <Group list>
+            <Group l={true}>
               <Button onClick={onChangeCalibrate("stop")}>
                 Stop calibration
               </Button>
@@ -319,7 +342,7 @@ function App() {
           <>
             <Back onClick={() => setShowSettings(false)} />
             <Header>Settings:</Header>
-            <Group list>
+            <Group l={true}>
               <Button onClick={onChangeCalibrate("weak")}>
                 Calibrate weak strokes
               </Button>
@@ -331,7 +354,7 @@ function App() {
               </Button>
             </Group>
             <Separator />
-            <Group list>
+            <Group l={true}>
               <Button onClick={onChangeSendFile}>Update firmware</Button>
             </Group>
           </>
