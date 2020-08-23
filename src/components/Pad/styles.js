@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+const k = 418 / 127;
 
 const Wrapper = styled.div(
   ({ velocity = 0 }) => css`
@@ -10,9 +11,9 @@ const Wrapper = styled.div(
     color: #aaa;
     max-width: 220px;
     border-radius: 4px;
-    transition: box-shadow ${velocity === 0 ? 1400 : 200}ms;
+    transition: box-shadow ${velocity === 0 ? 1400 : 0}ms;
     box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -4px 0 #222,
-      inset 0 -${velocity * 2}px 0 #222;
+      inset 0 -${velocity * k}px 0 #222;
   `
 );
 
