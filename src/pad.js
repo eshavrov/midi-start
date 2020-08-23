@@ -3,7 +3,9 @@ import { PAD, NN, MM } from "./constants";
 const initialState = {
   serialMode: false,
   path: false,
+  firmwareVersion: null,
   progress: 0,
+  version: "?",
   serial: "        ",
   program: null,
   pads: {
@@ -86,9 +88,12 @@ const padReducer = (state = initialState, action = {}) => {
       if (action.code === 0x59) {
         const program = action.value & 0b011;
 
+        const version = (action.value >>> 2) & 0b011111;
+
         return {
           ...state,
           program,
+          version,
         };
       }
 

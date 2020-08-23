@@ -1,20 +1,22 @@
-import styled, {css} from "styled-components";
+import styled, { css } from "styled-components";
 import { BackIcon } from "./components/BackIcon";
-import { SettingsIcon} from "./components/SettingsIcon"
-
+import { SettingsIcon } from "./components/SettingsIcon";
 
 const Wrapper = styled.header`
   position: relative;
   text-align: center;
   background-color: #252727;
-  min-height: 100vh;
+  min-height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: start;
   font-size: calc(10px + 2vmin);
   color: white;
   width: 100vw;
+  box-sizing: content-box;
+  overflow: hidden;
+  padding-bottom: 40px;
 `;
 
 const PadGroup = styled.section`
@@ -33,7 +35,7 @@ const Button = styled.button`
   font-family: inherit;
   font-size: 24;
   cursor: pointer;
-  padding: 8px 24px;
+  padding: 16px 24px;
   display: inline-block;
   margin: 6px 8px;
   text-transform: uppercase;
@@ -67,36 +69,36 @@ const Group = styled.div`
 const Label = styled.div`
   font-size: 16px;
   color: #aaa;
-  margin: 16px 8px 0 0;
-  width: 80px;
+  margin: 4px 0;
   text-align: right;
 `;
 
 const Serial = styled.div`
   font-family: "Courier New", Courier, monospace;
-  font-size: 14px;
-  color: #bbb;
-  position: absolute;
-  bottom: 16px;
-  right: 16px;
+  font-size: 18px;
+  color: #ccc;
+  align-self: start;
+  text-align: left;
+  max-width: 1020px;
+  padding: 0 16px;
 `;
 
 const SettingsPanel = styled.div(
   ({ show }) => css`
-  position: absolute;
+    position: absolute;
 
-  transition: 600ms;
+    transition: 600ms;
 
-  right: 0;
-  transform: translate3d(${show ? 0 : `110%`}, 0, 0);
+    right: 0;
+    transform: translate3d(${show ? 0 : `110%`}, 0, 0);
 
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: 360px;
-  padding: 48px 12px;
-  background-color: rgba(30, 30, 30, 0.97);
-`
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    max-width: 360px;
+    padding: 48px 12px;
+    background-color: rgba(30, 30, 30, 0.97);
+  `
 );
 
 const Header = styled.h2`
@@ -122,7 +124,7 @@ const Back = styled(BackIcon)`
   top: 24px;
   left: 24px;
 
-  transform: scale(-1, 1);  
+  transform: scale(-1, 1);
 
   :hover g {
     fill: #ccc;
@@ -134,6 +136,14 @@ const Settings = styled(SettingsIcon)`
   position: absolute;
   top: 24px;
   right: 24px;
+  & g {
+    fill: #a8009e;
+  }
+  @media (max-width: 1120px) {
+    & g {
+      fill: black;
+    }
+  }
 
   :hover g {
     fill: #ccc;
@@ -141,8 +151,51 @@ const Settings = styled(SettingsIcon)`
   }
 `;
 
+const Logo = styled.img.attrs(() => ({
+  src: "./logo-white.png",
+  width: "240",
+}))`
+  margin: 16px 0 12px;
+  /* border: 1px solid red; */
+  @media (max-width: 1020px) {
+    margin-left: 24px;
+  }
+`;
+
+const Top = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  width: 100%;
+  max-width: 1020px;
+  /* height: 80px; */
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+
+  background-color: #a8009e;
+
+  @media (max-width: 720px) {
+    /* flex-direction: column; */
+    justify-content: center;
+  }
+`;
+
+const Name = styled.h1`
+  /* border: 1px solid red; */
+  display: block;
+  line-height: 64px;
+  font-size: 64px;
+  height: 64px;
+  color: #fff;
+  font-weight: normal;
+  text-shadow: 0 4px 0px rgba(30, 30, 30, 1);
+  padding: 0 0 8px 16px;
+  margin: 0;
+`;
+
 export {
   Wrapper,
+  Logo,
   PadGroup,
   Program,
   Button,
@@ -154,4 +207,6 @@ export {
   Separator,
   Back,
   Settings,
+  Top,
+  Name,
 };

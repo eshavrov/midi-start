@@ -10,7 +10,6 @@ import { ProgressBar } from "./components/ProgressBar";
 import {
   Wrapper,
   PadGroup,
-  Program,
   Button,
   Group,
   Label,
@@ -20,6 +19,9 @@ import {
   Separator,
   Back,
   Settings,
+  Logo,
+  Top,
+  Name,
 } from "./styles";
 
 function timeout(ms) {
@@ -230,34 +232,43 @@ function App() {
 
   return (
     <Wrapper>
+      <Top>
+        <Logo />
+        <Name>PadStick</Name>
+      </Top>
+
       {isProgram && (
         <>
-          <Program>Program {pad.program + 1}</Program>
+          <Serial>
+            Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial};
+            Firmware&nbsp;version:&nbsp;{pad.version};
+            Settings&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}
+          </Serial>
           <Pads pad={pad} onChangePad={onChangePad} />
         </>
       )}
       <Group>
-        <Label></Label>
         <Button onClick={onChange}>get current program</Button>
       </Group>
+      <Label>Load from</Label>
       <Group>
-        <Label>Load from</Label>
         <Button onClick={onChangePG(0)}>p1</Button>
         <Button onClick={onChangePG(1)}>p2</Button>
         <Button onClick={onChangePG(2)}>p3</Button>
         <Button onClick={onChangePG(3)}>p4</Button>
       </Group>
       {isProgram && (
-        <Group>
+        <>
           <Label>Save to</Label>
-          <Button onClick={onChangeSaveTo(0)}>p1</Button>
-          <Button onClick={onChangeSaveTo(1)}>p2</Button>
-          <Button onClick={onChangeSaveTo(2)}>p3</Button>
-          <Button onClick={onChangeSaveTo(3)}>p4</Button>
-        </Group>
+          <Group>
+            <Button onClick={onChangeSaveTo(0)}>p1</Button>
+            <Button onClick={onChangeSaveTo(1)}>p2</Button>
+            <Button onClick={onChangeSaveTo(2)}>p3</Button>
+            <Button onClick={onChangeSaveTo(3)}>p4</Button>
+          </Group>
+        </>
       )}
 
-      <Serial>S/N: {pad.serial}</Serial>
       <Settings onClick={() => setShowSettings(true)} />
       <SettingsPanel show={showSettings}>
         <Back onClick={() => setShowSettings(false)} />

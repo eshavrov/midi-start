@@ -14,6 +14,12 @@ const Wrapper = styled.div(
     transition: box-shadow ${velocity === 0 ? 1400 : 0}ms;
     box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.04), inset 0 -4px 0 #222,
       inset 0 -${velocity * k}px 0 #222;
+    @media (max-width: 720px) {
+      width: 100%;
+      max-width: 100%;
+      margin: 16px 10px;
+      padding: 20px 32px;
+    }
   `
 );
 
