@@ -19,7 +19,7 @@ import {
   Header,
   Separator,
   Back,
-  Settings
+  Settings,
 } from "./styles";
 
 function timeout(ms) {
@@ -174,7 +174,25 @@ function App() {
   };
 
   const onChangeCalibrate = (type) => () => {
-    console.log("csalibrate", type);
+    console.log("calibrate", type);
+    switch (type) {
+      case "weak": {
+        send(outputRef.current, [0xbf, 0x5a, 0x7a]);
+        break;
+      }
+      case "medium": {
+        send(outputRef.current, [0xbf, 0x5a, 0x7b]);
+        break;
+      }
+      case "hard": {
+        send(outputRef.current, [0xbf, 0x5a, 0x7c]);
+        break;
+      }
+      case "stop": {
+        send(outputRef.current, [0xbf, 0x5a, 0x7d]);
+        break;
+      }
+    }
   };
 
   const isProgram = pad.program !== null;
