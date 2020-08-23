@@ -22,18 +22,19 @@ function timeout(ms) {
 }
 
 function readAllBytesAsUInt8Array(path) {
-  var req = new XMLHttpRequest();
-  req.open("GET", path, false);
-  req.overrideMimeType("text/plain; charset=binary-data");
-  req.send(null);
-  if (req.status !== 200) {
-    console.log("error");
-    return null;
-  }
-  var text = req.responseText;
-  var encoder = new TextEncoder("utf-8");
-  var resultArray = encoder.encode(text);
-  return resultArray.buffer;
+  return new Promise((resolve) => {
+    var req = new XMLHttpRequest();
+    req.open("GET", path, true);
+    req.responseType = "arraybuffer";
+    req.onload = function () {
+      var arrayBuffer = req.response;
+      if (arrayBuffer) {
+        resolve(arrayBuffer);
+      }
+    };
+
+    req.send(null);
+  });
 }
 
 function App() {
@@ -66,6 +67,7 @@ function App() {
   };
 
   const onMIDISuccess = (midiAccess) => {
+    console.log("midiAccess", midiAccess);
     const inputs = midiAccess.inputs;
     const outputs = midiAccess.outputs;
 
@@ -96,7 +98,9 @@ function App() {
       return;
     }
 
-    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+    navigator
+      .requestMIDIAccess({ sysex: true })
+      .then(onMIDISuccess, onMIDIFailure);
   }, []);
 
   const onClickReload = React.useCallback(
@@ -131,39 +135,40 @@ function App() {
   const onChangeSendFile = async () => {
     padDispatch({ type: "set_mode", code: "patch" });
 
-    const buffer = readAllBytesAsUInt8Array("./PadStickV01.syx");
-    const step = 256;
+    const buffer = await readAllBytesAsUInt8Array("./PadStickV01.syx");
+    console.log("buffer", buffer);
+
+    padDispatch({ type: "progress", value: 0 });
+    send(outputRef.current, new Uint8Array(buffer));
+    const sizeChunk = 256;
     const length = buffer.byteLength;
     let pos = 0;
-    padDispatch({ type: "progress", value: 0 });
 
     do {
       const dataView = new DataView(
         buffer,
         [pos],
-        [Math.min(step, length - pos)]
+        [Math.min(sizeChunk, length - pos)]
       );
 
       const arr = Array.from({ length: dataView.byteLength }, (_, index) =>
         dataView.getUint8(index)
       );
-      console.log("send ->>", arr);
-      // send(outputRef.current, arr;
+      // send(outputRef.current, arr);
 
       await timeout(100);
-      pos += step;
+      pos += sizeChunk;
       padDispatch({ type: "progress", value: Math.min(pos / length, 1) });
     } while (pos < length);
 
     await timeout(1000);
 
-    padDispatch({ type: "set_mode", code: "patch", value: false });
+    // padDispatch({ type: "set_mode", code: "patch", value: false });
   };
 
-  const isProgram =  pad.program !== null;
+  const isProgram = pad.program !== null;
   if (pad.patch) {
-
-    const value = (pad.progress * 100);
+    const value = pad.progress * 100;
     return (
       <Wrapper>
         Updating the device firmware...
@@ -223,6 +228,7 @@ function App() {
         </Group>
       )}
       <Button onClick={onChangeSendFile}>file</Button>
+
       <Serial>S/N: {pad.serial}</Serial>
     </Wrapper>
   );

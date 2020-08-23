@@ -24,8 +24,9 @@ const getValue = ({ sens = 0, dyn = 0, lim = 0 }) => {
   return value;
 };
 
-const send = (ref, values) => {
-  ref.send(values);
+const send = (ref,...args) => {
+  ref.send(...args);
+  const [values] = args;
 
   let str =">>";
 
