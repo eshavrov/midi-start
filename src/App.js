@@ -15,6 +15,11 @@ import {
   Group,
   Label,
   Serial,
+  SettingsPanel,
+  Header,
+  Separator,
+  Back,
+  Settings
 } from "./styles";
 
 function timeout(ms) {
@@ -41,6 +46,7 @@ function App() {
   const outputRef = React.useRef();
   const [status, setStatus] = React.useState(1);
   const [pad, padDispatch] = React.useReducer(padReducer, initialState);
+  const [showSettings, setShowSettings] = React.useState(false);
 
   const onMIDIMessage = (event) => {
     const [type, code, value] = event.data;
@@ -140,6 +146,7 @@ function App() {
 
     padDispatch({ type: "progress", value: 0 });
     send(outputRef.current, new Uint8Array(buffer));
+
     const sizeChunk = 256;
     const length = buffer.byteLength;
     let pos = 0;
@@ -163,7 +170,11 @@ function App() {
 
     await timeout(1000);
 
-    // padDispatch({ type: "set_mode", code: "patch", value: false });
+    padDispatch({ type: "set_mode", code: "patch", value: false });
+  };
+
+  const onChangeCalibrate = (type) => () => {
+    console.log("csalibrate", type);
   };
 
   const isProgram = pad.program !== null;
@@ -227,9 +238,29 @@ function App() {
           <Button onClick={onChangeSaveTo(3)}>p4</Button>
         </Group>
       )}
-      <Button onClick={onChangeSendFile}>file</Button>
 
       <Serial>S/N: {pad.serial}</Serial>
+      <Settings onClick={() => setShowSettings(true)} />
+      <SettingsPanel show={showSettings}>
+        <Back onClick={() => setShowSettings(false)} />
+        <Header>Settings:</Header>
+        <Group>
+          <Button onClick={onChangeCalibrate("weak")}>
+            Calibrate weak strokes
+          </Button>
+          <Button onClick={onChangeCalibrate("medium")}>
+            Calibrate medium strokes
+          </Button>
+          <Button onClick={onChangeCalibrate("hard")}>
+            Calibrate hard stroke
+          </Button>
+          <Button onClick={onChangeCalibrate("stop")}>Stop calibration</Button>
+        </Group>
+        <Separator />
+        <Group>
+          <Button onClick={onChangeSendFile}>Update firmware</Button>
+        </Group>
+      </SettingsPanel>
     </Wrapper>
   );
 }

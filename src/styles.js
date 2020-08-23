@@ -1,4 +1,7 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
+import { BackIcon } from "./components/BackIcon";
+import { SettingsIcon} from "./components/SettingsIcon"
+
 
 const Wrapper = styled.header`
   position: relative;
@@ -78,4 +81,77 @@ const Serial = styled.div`
   right: 16px;
 `;
 
-export { Wrapper, PadGroup, Program, Button, Group, Label, Serial };
+const SettingsPanel = styled.div(
+  ({ show }) => css`
+  position: absolute;
+
+  transition: 600ms;
+
+  right: 0;
+  transform: translate3d(${show ? 0 : `110%`}, 0, 0);
+
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 360px;
+  padding: 48px 12px;
+  background-color: rgba(30, 30, 30, 0.97);
+`
+);
+
+const Header = styled.h2`
+  width: 100%;
+  text-align: start;
+  color: #888;
+  font-weight: normal;
+
+  font-size: 18px;
+  padding: 24px 0 12px 8px;
+`;
+
+const Separator = styled.div`
+  width: 100%;
+
+  border-top: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+  margin: 16px 0;
+`;
+
+const Back = styled(BackIcon)`
+  position: absolute;
+  top: 24px;
+  left: 24px;
+
+  transform: scale(-1, 1);  
+
+  :hover g {
+    fill: #ccc;
+    cursor: pointer;
+  }
+`;
+
+const Settings = styled(SettingsIcon)`
+  position: absolute;
+  top: 24px;
+  right: 24px;
+
+  :hover g {
+    fill: #ccc;
+    cursor: pointer;
+  }
+`;
+
+export {
+  Wrapper,
+  PadGroup,
+  Program,
+  Button,
+  Group,
+  Label,
+  Serial,
+  SettingsPanel,
+  Header,
+  Separator,
+  Back,
+  Settings,
+};
