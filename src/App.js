@@ -2,7 +2,7 @@ import React from "react";
 
 import { onMIDIMessageLog, onMIDIFailure, send } from "./helpers";
 import { padReducer, initialState } from "./pad";
-import { NAME, NN_INVERT, MM_INVERT } from "./constants";
+import { NAME, NN_INVERT, MM_INVERT, NOTE_TO_NAME } from "./constants";
 
 import { Pad } from "./components/Pad";
 import { ProgressBar } from "./components/ProgressBar";
@@ -298,9 +298,10 @@ function App() {
       {isProgram && (
         <>
           <Serial>
-            Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial};
-            Firmware&nbsp;version:&nbsp;{pad.version};
-            Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}
+            Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial}&nbsp;
+            Firmware&nbsp;version:&nbsp;{pad.version}&nbsp;
+            Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}&nbsp;
+            {pad.lastStroke && <>Last stroke: {NOTE_TO_NAME[pad.lastStroke]}</>}
           </Serial>
           <Pads pad={pad} onChangePad={onChangePad} />
         </>

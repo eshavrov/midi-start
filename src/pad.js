@@ -10,6 +10,7 @@ const initialState = {
   calibrate: null,
   serial: "        ",
   program: null,
+  lastStroke: null,
   pads: {
     [PAD.A]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
     [PAD.B]: { note: 0, value: 0, sens: 0, dyn: 0, lim: 0, velocity: 0 },
@@ -27,6 +28,7 @@ const replaceAt = (string, index, replacement) => {
 };
 
 const getPad = (state, { code, value }) => {
+  
   if (Object.keys(NN).includes(`${code}`)) {
     const currentPad = NN[code];
 
@@ -99,6 +101,8 @@ const padReducer = (state = initialState, action = {}) => {
         };
       }
 
+
+
       return {
         ...state,
         pads: { ...state.pads, ...getPad(state.pads, action) },
@@ -119,9 +123,13 @@ const padReducer = (state = initialState, action = {}) => {
       }
 
       const currentPad = currentPads[0];
+      const lastStroke = action.code;
+      console.log(lastStroke);
 
       return {
         ...state,
+        lastStroke,
+
         pads: {
           ...state.pads,
           [currentPad]: { ...state.pads[currentPad], velocity: action.value },

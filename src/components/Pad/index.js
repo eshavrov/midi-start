@@ -85,7 +85,6 @@ const Pad = React.memo((props) => {
     <Wrapper velocity={velocity}>
       <Header>{name}</Header>
       <Item
-        // title={`${note} (${NOTE_TO_NAME[note]})`}
         title="note"
         options={noteOptions}
         value={note}
@@ -95,21 +94,21 @@ const Pad = React.memo((props) => {
       <Separator />
 
       <Item
-        title={`sens (${sens})`}
+        title={`sens`}
         options={sensOptions}
         value={sens}
         onChange={onChangeSens}
       />
 
       <Item
-        title={`dyn (${dyn})`}
+        title={`dyn`}
         options={dynOptions}
         value={dyn}
         onChange={onChangeDyn}
       />
 
       <Item
-        title={`limiter mode (${lim})`}
+        title={`limiter mode`}
         options={limOptions}
         value={lim}
         onChange={onChangeLim}
