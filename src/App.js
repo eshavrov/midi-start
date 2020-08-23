@@ -22,7 +22,32 @@ import {
   Logo,
   Top,
   Name,
+  Text,
 } from "./styles";
+
+const messages = {
+  weak: (
+    <>
+      The WEAK stroke calibration is in progress now. Please do a few dozen WEAK
+      strokes on each pad to learn PadStick to recognize them. To terminate this
+      process please press the "Stop Calibration" button.
+    </>
+  ),
+  medium: (
+    <>
+      The WEAK stroke calibration is in progress now. Please do a few dozen
+      MEDIUM strokes on each pad to learn PadStick to recognize them. To
+      terminate this process please press the "Stop Calibration" button.
+    </>
+  ),
+  hard: (
+    <>
+      The WEAK stroke calibration is in progress now. Please do a few dozen HARD
+      strokes on each pad to learn PadStick to recognize them. To terminate this
+      process please press the "Stop Calibration" button.
+    </>
+  ),
+};
 
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -172,11 +197,13 @@ function App() {
 
     await timeout(1000);
 
-    padDispatch({ type: "set_mode", code: "patch", value: false });
+    // padDispatch({ type: "set_mode", code: "patch", value: false });
   };
 
   const onChangeCalibrate = (type) => () => {
     console.log("calibrate", type);
+    padDispatch({ type: "set_mode", code: "calibrate", value: type });
+
     switch (type) {
       case "weak": {
         send(outputRef.current, [0xbf, 0x5a, 0x7a]);
@@ -202,8 +229,14 @@ function App() {
     const value = pad.progress * 100;
     return (
       <Wrapper>
-        Updating the device firmware...
-        <ProgressBar value={value} />
+        {value === 100 ? (
+          <Text>Firmware image has been uploaded. Please reconnect the USB and wait 25 sec for installation.</Text>
+        ) : (
+          <>
+            <Text>The Firmware is uploading now. Please wait!</Text>
+            <ProgressBar value={value} />
+          </>
+        )}
       </Wrapper>
     );
   }
@@ -229,6 +262,8 @@ function App() {
       </Wrapper>
     );
   }
+
+  const isCalibrate = ["weak", "medium", "hard"].includes(pad.calibrate);
 
   return (
     <Wrapper>
@@ -271,24 +306,36 @@ function App() {
 
       <Settings onClick={() => setShowSettings(true)} />
       <SettingsPanel show={showSettings}>
-        <Back onClick={() => setShowSettings(false)} />
-        <Header>Settings:</Header>
-        <Group>
-          <Button onClick={onChangeCalibrate("weak")}>
-            Calibrate weak strokes
-          </Button>
-          <Button onClick={onChangeCalibrate("medium")}>
-            Calibrate medium strokes
-          </Button>
-          <Button onClick={onChangeCalibrate("hard")}>
-            Calibrate hard stroke
-          </Button>
-          <Button onClick={onChangeCalibrate("stop")}>Stop calibration</Button>
-        </Group>
-        <Separator />
-        <Group>
-          <Button onClick={onChangeSendFile}>Update firmware</Button>
-        </Group>
+        {isCalibrate ? (
+          <>
+            <Header>{messages[pad.calibrate]}</Header>
+            <Group list>
+              <Button onClick={onChangeCalibrate("stop")}>
+                Stop calibration
+              </Button>
+            </Group>
+          </>
+        ) : (
+          <>
+            <Back onClick={() => setShowSettings(false)} />
+            <Header>Settings:</Header>
+            <Group list>
+              <Button onClick={onChangeCalibrate("weak")}>
+                Calibrate weak strokes
+              </Button>
+              <Button onClick={onChangeCalibrate("medium")}>
+                Calibrate medium strokes
+              </Button>
+              <Button onClick={onChangeCalibrate("hard")}>
+                Calibrate hard stroke
+              </Button>
+            </Group>
+            <Separator />
+            <Group list>
+              <Button onClick={onChangeSendFile}>Update firmware</Button>
+            </Group>
+          </>
+        )}
       </SettingsPanel>
     </Wrapper>
   );

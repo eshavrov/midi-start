@@ -6,6 +6,7 @@ const initialState = {
   firmwareVersion: null,
   progress: 0,
   version: "?",
+  calibrate: null,
   serial: "        ",
   program: null,
   pads: {

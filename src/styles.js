@@ -64,6 +64,16 @@ const Group = styled.div`
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 10px;
+  align-items: flex-start;
+  ${(props) =>
+    props.list &&
+    css`
+      flex-direction: column;
+    `}
+
+  @media (max-width: 720px) {
+    align-items: stretch;
+  }
 `;
 
 const Label = styled.div`
@@ -80,22 +90,25 @@ const Serial = styled.div`
   align-self: start;
   text-align: left;
   max-width: 1020px;
+  width: 100%;
   padding: 0 16px;
+
+  @media (min-width: 1020px) {
+    align-self: center;
+  }
 `;
 
 const SettingsPanel = styled.div(
   ({ show }) => css`
     position: absolute;
-
     transition: 600ms;
-
     right: 0;
-    transform: translate3d(${show ? 0 : `110%`}, 0, 0);
-
+    transform: translate3d(${show ? 0 : `120%`}, 0, 0);
+    box-sizing: border-box;
     top: 0;
     bottom: 0;
     width: 100%;
-    max-width: 360px;
+    max-width: 100%;
     padding: 48px 12px;
     background-color: rgba(30, 30, 30, 0.97);
   `
@@ -104,11 +117,18 @@ const SettingsPanel = styled.div(
 const Header = styled.h2`
   width: 100%;
   text-align: start;
-  color: #888;
+  color: #aaa;
   font-weight: normal;
 
   font-size: 18px;
   padding: 24px 0 12px 8px;
+`;
+const Text = styled.span`
+  color: #aaa;
+  font-weight: normal;
+
+  font-size: 18px;
+  padding: 48px 0 0;
 `;
 
 const Separator = styled.div`
@@ -209,4 +229,5 @@ export {
   Settings,
   Top,
   Name,
+  Text,
 };
