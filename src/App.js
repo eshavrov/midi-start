@@ -35,14 +35,14 @@ const messages = {
   ),
   medium: (
     <>
-      The WEAK stroke calibration is in progress now. Please do a few dozen
+      The MEDIUM stroke calibration is in progress now. Please do a few dozen
       MEDIUM strokes on each pad to learn Pad-Stick to recognize them. To
       terminate this process please press the "Stop Calibration" button.
     </>
   ),
   hard: (
     <>
-      The WEAK stroke calibration is in progress now. Please do a few dozen HARD
+      The HARD stroke calibration is in progress now. Please do a few dozen HARD
       strokes on each pad to learn Pad-Stick to recognize them. To terminate
       this process please press the "Stop Calibration" button.
     </>
@@ -321,15 +321,16 @@ function App() {
       <Group>
         <Button onClick={onChange}>get current values</Button>
       </Group>
-      <Label>Load from</Label>
-      <Group>
-        <Button onClick={onChangePG(0)}>p1</Button>
-        <Button onClick={onChangePG(1)}>p2</Button>
-        <Button onClick={onChangePG(2)}>p3</Button>
-        <Button onClick={onChangePG(3)}>p4</Button>
-      </Group>
       {isProgram && (
         <>
+          <Label>Load from</Label>
+          <Group>
+            <Button onClick={onChangePG(0)}>p1</Button>
+            <Button onClick={onChangePG(1)}>p2</Button>
+            <Button onClick={onChangePG(2)}>p3</Button>
+            <Button onClick={onChangePG(3)}>p4</Button>
+          </Group>
+
           <Label>Save to</Label>
           <Group>
             <Button onClick={onChangeSaveTo(0)}>p1</Button>
