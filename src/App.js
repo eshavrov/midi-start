@@ -35,25 +35,19 @@ const STATUS = {
 };
 
 const messages = {
-  weak: (
+  calibration: (
     <>
-      The WEAK stroke calibration is in progress now. Please do a few dozen WEAK
-      strokes on each pad to learn Pad-Stick to recognize them. To terminate
-      this process please press the "Stop Calibration" button.
+      The stroke calibration is in progress now. Please do 8 WEAK strokes and 25
+      HARD strokes on each pad. It allows the Pad-Stick to recognize full
+      dynamic range. Acoording LEDs should be flashing. Press "Stop Calibration"
+      button when finish.
     </>
   ),
-  medium: (
+  nameOption: (
     <>
-      The MEDIUM stroke calibration is in progress now. Please do a few dozen
-      MEDIUM strokes on each pad to learn Pad-Stick to recognize them. To
-      terminate this process please press the "Stop Calibration" button.
-    </>
-  ),
-  hard: (
-    <>
-      The HARD stroke calibration is in progress now. Please do a few dozen HARD
-      strokes on each pad to learn Pad-Stick to recognize them. To terminate
-      this process please press the "Stop Calibration" button.
+      The USB-device name has been changed (digital index added). Please use the
+      system settings of your OS to delete USB-device with previous name. New
+      device will appears at the next connection.
     </>
   ),
 };
@@ -131,7 +125,7 @@ function App() {
       return;
     }
 
-    if (inputs.size > 1 || outputs.size > 1) {
+    if (inputs.size > 0) {
       setDevices({
         inputs,
         outputs,
@@ -276,15 +270,11 @@ function App() {
     padDispatch({ type: "set_mode", code: "calibrate", value: type });
 
     switch (type) {
-      case "weak": {
-        send(outputRef.current, [0xbf, 0x5a, 0x7a]);
-        break;
-      }
-      case "medium": {
+      case "nameOption": {
         send(outputRef.current, [0xbf, 0x5a, 0x7b]);
         break;
       }
-      case "hard": {
+      case "calibration": {
         send(outputRef.current, [0xbf, 0x5a, 0x7c]);
         break;
       }
@@ -294,6 +284,7 @@ function App() {
       }
     }
   };
+  const isConnectDisabled = !deviceId || deviceId === "-1";
 
   const isProgram = pad.program !== null;
   if (pad.patch) {
@@ -337,7 +328,7 @@ function App() {
           value={deviceId}
           onChange={onChangeDevice}
         />
-        <Button onClick={onChangeConnect} disabled={!deviceId}>
+        <Button onClick={onChangeConnect} disabled={isConnectDisabled}>
           connect
         </Button>
       </Wrapper>
@@ -352,7 +343,8 @@ function App() {
     );
   }
 
-  const isCalibrate = ["weak", "medium", "hard"].includes(pad.calibrate);
+  const isCalibrate = ["calibration"].includes(pad.calibrate);
+  const isNameOption = ["nameOption"].includes(pad.calibrate);
   const isChanged = changed;
   const isSaved = saved;
 
@@ -406,7 +398,12 @@ function App() {
 
       <Settings onClick={() => setShowSettings(true)} />
       <SettingsPanel show={showSettings}>
-        {isCalibrate ? (
+        {isNameOption ? (
+          <>
+            <Header>{messages[pad.calibrate]}</Header>
+            <Button onClick={onClickReload}>Ok</Button>
+          </>
+        ) : isCalibrate ? (
           <>
             <Header>{messages[pad.calibrate]}</Header>
             <Group l={true}>
@@ -420,14 +417,11 @@ function App() {
             <Back onClick={() => setShowSettings(false)} />
             <Header>Settings:</Header>
             <Group l={true}>
-              <Button onClick={onChangeCalibrate("weak")}>
-                Calibrate weak strokes
+              <Button onClick={onChangeCalibrate("calibration")}>
+                Calibrate strokes
               </Button>
-              <Button onClick={onChangeCalibrate("medium")}>
-                Calibrate medium strokes
-              </Button>
-              <Button onClick={onChangeCalibrate("hard")}>
-                Calibrate hard stroke
+              <Button onClick={onChangeCalibrate("nameOption")}>
+                Name option
               </Button>
             </Group>
             <Separator />

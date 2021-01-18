@@ -58,6 +58,10 @@ const Button = styled.button`
     box-shadow: 0 0 #111;
     top: 4px;
   }
+
+  :disabled {
+    opacity: 0.3;
+  }
 `;
 
 const Group = styled.div`
