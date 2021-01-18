@@ -5,6 +5,8 @@ import { padReducer, initialState } from "./pad";
 import { NAME, NN_INVERT, MM_INVERT, NOTE_TO_NAME } from "./constants";
 
 import { Pad } from "./components/Pad";
+import { Item } from "./components/Item";
+
 import { ProgressBar } from "./components/ProgressBar";
 
 import {
@@ -24,6 +26,13 @@ import {
   Name,
   Text,
 } from "./styles";
+
+const STATUS = {
+  NO_DEVICES: 1,
+  ONE_DEVICE: 0,
+  LIST_DEVICES: 2,
+  NOT_SUPPORTED: 3,
+};
 
 const messages = {
   weak: (
@@ -76,6 +85,8 @@ function App() {
   const [showSettings, setShowSettings] = React.useState(false);
   const [changed, setChanged] = React.useState(false);
   const [saved, setSaved] = React.useState(null);
+  const [devices, setDevices] = React.useState([]);
+  const [deviceId, setDeviceId] = React.useState();
 
   const onStateChange = ({ port }) => {
     padDispatch({
@@ -116,16 +127,25 @@ function App() {
     midiAccess.onstatechange = onStateChange;
 
     if (inputs.size === 0 || outputs.size === 0) {
-      setStatus(1);
+      setStatus(STATUS.NO_DEVICES);
       return;
     }
 
     if (inputs.size > 1 || outputs.size > 1) {
-      setStatus(2);
+      setDevices({
+        inputs,
+        outputs,
+        list: [...inputs.values()].map(({ name, id, manufacturer }) => ({
+          value: name,
+          title: `${name} (${manufacturer})`,
+        })),
+      });
+
+      setStatus(STATUS.LIST_DEVICES);
       return;
     }
 
-    setStatus(0);
+    setStatus(STATUS.ONE_DEVICE);
 
     for (const input of inputs.values()) {
       input.onmidimessage = onMIDIMessage;
@@ -138,7 +158,7 @@ function App() {
 
   React.useEffect(() => {
     if (!navigator.requestMIDIAccess) {
-      setStatus(3);
+      setStatus(STATUS.NOT_SUPPORTED);
       return;
     }
 
@@ -151,6 +171,39 @@ function App() {
     () => window.location.reload(true),
     []
   );
+
+  const onChangeDevice = (deviceId) => {
+    setDeviceId(deviceId);
+  };
+
+  const onChangeConnect = () => {
+    if (deviceId) {
+      let selectedInput = false;
+      let selectedOutput = false;
+
+      for (const input of devices.inputs.values()) {
+        if (input.name === deviceId) {
+          input.onmidimessage = onMIDIMessage;
+          selectedInput = true;
+          break;
+        }
+      }
+
+      for (const output of devices.outputs.values()) {
+        if (output.name === deviceId) {
+          outputRef.current = output;
+          selectedOutput = true;
+          break;
+        }
+      }
+
+      if (selectedInput && selectedOutput) {
+        setStatus(STATUS.ONE_DEVICE);
+      } else {
+        console.error("Opps!");
+      }
+    }
+  };
 
   const onChange = React.useCallback(() => {
     // Получение серийного номера
@@ -259,11 +312,11 @@ function App() {
     );
   }
 
-  if (status === 3) {
+  if (status === STATUS.NOT_SUPPORTED) {
     return <Wrapper>WebMIDI is not supported in this browser.</Wrapper>;
   }
 
-  if (status === 1) {
+  if (status === STATUS.NO_DEVICES) {
     return (
       <Wrapper>
         no device
@@ -272,11 +325,18 @@ function App() {
     );
   }
 
-  if (status === 2) {
+  if (status === STATUS.LIST_DEVICES) {
     return (
       <Wrapper>
-        disconnect other devices
-        <Button onClick={onClickReload}>again!</Button>
+        <Item
+          title={"Select midi-device:"}
+          options={devices.list}
+          value={deviceId}
+          onChange={onChangeDevice}
+        />
+        <Button onClick={onChangeConnect} disabled={!deviceId}>
+          connect
+        </Button>
       </Wrapper>
     );
   }
