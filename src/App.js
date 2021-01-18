@@ -131,9 +131,9 @@ function App() {
         outputs,
         list: [
           { title: "Choose the one...", value: "-1" },
-          ...[...inputs.values()].map(({ name, id, manufacturer }) => ({
+          ...[...inputs.values()].map(({ name }) => ({
             value: name,
-            title: `${name} (${manufacturer})`,
+            title: `${name}`,
           })),
         ],
       });
