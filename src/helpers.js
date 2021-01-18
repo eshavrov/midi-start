@@ -1,5 +1,5 @@
 const onMIDIMessageLog = (event) => {
-  let str ="<< ";
+  let str = "<< ";
 
   for (var i = 0; i < event.data.length; i++) {
     str += "0x" + event.data[i].toString(16) + " ";
@@ -18,18 +18,17 @@ const getValue = ({ sens = 0, dyn = 0, lim = 0 }) => {
   return value;
 };
 
-const send = (ref,...args) => {
-  ref.send(...args);
+const send = (ref, ...args) => {
   const [values] = args;
-
-  let str =">> ";
+  let str = ">> ";
 
   for (var i = 0; i < values.length; i++) {
     str += "0x" + values[i].toString(16) + " ";
   }
 
   console.log(str);
-
-}
+  
+  ref.send(...args);
+};
 
 export { onMIDIMessageLog, onMIDIFailure, getValue, send };

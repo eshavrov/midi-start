@@ -235,10 +235,10 @@ function App() {
   const onChangeSendFile = async () => {
     padDispatch({ type: "set_mode", code: "patch" });
 
-    const buffer = await readAllBytesAsUInt8Array("./PadStickV01.syx");
+    const buffer = await readAllBytesAsUInt8Array("./PadStickV02.syx");
 
     padDispatch({ type: "progress", value: 0 });
-    send(outputRef.current, new Uint8Array(buffer));
+    // send(outputRef.current, new Uint8Array(buffer));
 
     const sizeChunk = 256;
     const length = buffer.byteLength;
@@ -254,9 +254,10 @@ function App() {
       const arr = Array.from({ length: dataView.byteLength }, (_, index) =>
         dataView.getUint8(index)
       );
-      // send(outputRef.current, arr);
+      send(outputRef.current, arr);
 
-      await timeout(100);
+      await timeout(200);
+
       pos += sizeChunk;
       padDispatch({ type: "progress", value: Math.min(pos / length, 1) });
     } while (pos < length);
