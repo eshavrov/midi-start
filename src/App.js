@@ -86,7 +86,7 @@ function App() {
   const [changed, setChanged] = React.useState(false);
   const [saved, setSaved] = React.useState(null);
   const [devices, setDevices] = React.useState([]);
-  const [deviceId, setDeviceId] = React.useState();
+  const [deviceId, setDeviceId] = React.useState("-1");
 
   const onStateChange = ({ port }) => {
     padDispatch({
@@ -135,10 +135,13 @@ function App() {
       setDevices({
         inputs,
         outputs,
-        list: [...inputs.values()].map(({ name, id, manufacturer }) => ({
-          value: name,
-          title: `${name} (${manufacturer})`,
-        })),
+        list: [
+          { title: "Choose the one...", value: "-1" },
+          ...[...inputs.values()].map(({ name, id, manufacturer }) => ({
+            value: name,
+            title: `${name} (${manufacturer})`,
+          })),
+        ],
       });
 
       setStatus(STATUS.LIST_DEVICES);
@@ -177,7 +180,7 @@ function App() {
   };
 
   const onChangeConnect = () => {
-    if (deviceId) {
+    if (deviceId && deviceId !== "-1") {
       let selectedInput = false;
       let selectedOutput = false;
 
