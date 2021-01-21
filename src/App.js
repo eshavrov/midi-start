@@ -25,6 +25,11 @@ import {
   Top,
   Name,
   Text,
+  Line,
+  QuestionMark,
+  WrapperHelp,
+  WindowHelp,
+  TextHelp,
 } from "./styles";
 
 const STATUS = {
@@ -37,17 +42,57 @@ const STATUS = {
 const messages = {
   calibration: (
     <>
-      The stroke calibration is in progress now. Please do 8 WEAK strokes and 25
-      HARD strokes on each pad. It allows the Pad-Stick to recognize full
-      dynamic range. Acoording LEDs should be flashing. Press "Stop Calibration"
-      button when finish.
+      The stroke calibration is&nbsp;in&nbsp;progress now. Please
+      do&nbsp;8&nbsp;WEAK strokes and 25&nbsp;HARD strokes on&nbsp;each pad.
+      It&nbsp;allows the Pad-Stick to&nbsp;recognize full dynamic range.
+      Acoording LEDs should be&nbsp;flashing. Press &laquo;Stop
+      Calibration&raquo; button when finish.
     </>
   ),
   nameOption: (
     <>
-      The USB-device name has been changed (digital index added). Please use the
-      system settings of your OS to delete USB-device with previous name. New
-      device will appears at the next connection.
+      The USB-device name has been changed (an&nbsp;index added). Please use the
+      system settings of&nbsp;your&nbsp;OS to&nbsp;delete USB-device with
+      previous name. New device will appear at&nbsp;the next connection.
+    </>
+  ),
+};
+
+const helpMessages = {
+  nameOption: (
+    <>
+      This function allows you to&nbsp;alternate the name of&nbsp;this
+      USB-device. The alternative names could be&nbsp;required if&nbsp;you use
+      two or&nbsp;more Pad-Sticks simultaneously. Some random digital
+      or&nbsp;letter index will be&nbsp;added to&nbsp;the current name. This
+      function will take affect after disconnection and next connection.
+    </>
+  ),
+  firmwareUpdate: (
+    <>Use this function to&nbsp;update the firmware with the last version.</>
+  ),
+  programChange: (
+    <>
+      These buttons do&nbsp;the same as&nbsp;the MIDI-commands PC1..PC4 sent
+      to&nbsp;Ch10 of&nbsp;the Pad-Sticks. This function loads the set
+      of&nbsp;settings to&nbsp;Pad-Sticks. Notes, dynamic response curves and
+      velocity limits will be&nbsp;setup to&nbsp;the values preliminary saved
+      to&nbsp;a&nbsp;program.
+    </>
+  ),
+  saveToProgram: (
+    <>
+      Use one of&nbsp;these buttons if&nbsp;you would like to&nbsp;save current
+      settings to&nbsp;a&nbsp;program. The set of&nbsp;settings (Notes, dynamic
+      response curves and velocity limits) will be&nbsp;saved.
+    </>
+  ),
+  calibrateStrokes: (
+    <>
+      This is&nbsp;personalization feature. This function allows to&nbsp;learn
+      Pad-Stick to&nbsp;work in&nbsp;full dynamic range of&nbsp;your strokes.
+      It&nbsp;learns the pads to&nbsp;determine all strokes from weak
+      to&nbsp;hard values. Use it&nbsp;a&nbsp;single time before playing.
     </>
   ),
 };
@@ -81,6 +126,7 @@ function App() {
   const [saved, setSaved] = React.useState(null);
   const [devices, setDevices] = React.useState([]);
   const [deviceId, setDeviceId] = React.useState("-1");
+  const [help, setHelp] = React.useState(null);
 
   const onStateChange = ({ port }) => {
     padDispatch({
@@ -235,7 +281,7 @@ function App() {
   const onChangeSendFile = async () => {
     padDispatch({ type: "set_mode", code: "patch" });
 
-    const buffer = await readAllBytesAsUInt8Array("./PadStickV02.syx");
+    const buffer = await readAllBytesAsUInt8Array("./PadStickFW.syx");
 
     padDispatch({ type: "progress", value: 0 });
     // send(outputRef.current, new Uint8Array(buffer));
@@ -349,6 +395,15 @@ function App() {
   const isChanged = changed;
   const isSaved = saved;
 
+  // if (help && helpMessages[help]) {
+  //   return (
+  //     <Wrapper>
+  //       <TextHelp>{helpMessages[help]}</TextHelp>
+  //       <Button onClick={() => setHelp(null)}>Ok</Button>
+  //     </Wrapper>
+  //   );
+  // }
+
   return (
     <Wrapper>
       <Top>
@@ -359,8 +414,8 @@ function App() {
       {isProgram && (
         <>
           <Serial>
-            Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial}&nbsp;
-            Firmware&nbsp;version:&nbsp;{pad.version}&nbsp;&nbsp;
+            Connected&nbsp;device&nbsp;S/N:&nbsp;{pad.serial}&nbsp;{" "}
+            Firmware&nbsp;version:&nbsp;{pad.version}&nbsp;&nbsp;{" "}
             {isSaved !== null ? (
               <>Values saved to program {saved}!</>
             ) : isChanged ? (
@@ -368,8 +423,10 @@ function App() {
             ) : (
               <>Values&nbsp;from&nbsp;program:&nbsp;{pad.program + 1}</>
             )}
-            &nbsp;&nbsp;
-            {pad.lastStroke && <>Last stroke: {NOTE_TO_NAME[pad.lastStroke]}</>}
+            &nbsp;&nbsp;{" "}
+            {pad.lastStroke && (
+              <>Last&nbsp;stroke: {NOTE_TO_NAME[pad.lastStroke]}</>
+            )}
           </Serial>
           <Pads pad={pad} onChangePad={onChangePad} />
         </>
@@ -379,7 +436,9 @@ function App() {
       </Group>
       {isProgram && (
         <>
-          <Label>Load from</Label>
+          <Label>
+            Load from <QuestionMark onClick={() => setHelp("programChange")} />
+          </Label>
           <Group>
             <Button onClick={onChangePG(0)}>p1</Button>
             <Button onClick={onChangePG(1)}>p2</Button>
@@ -387,7 +446,9 @@ function App() {
             <Button onClick={onChangePG(3)}>p4</Button>
           </Group>
 
-          <Label>Save to</Label>
+          <Label>
+            Save to <QuestionMark onClick={() => setHelp("saveToProgram")} />
+          </Label>
           <Group>
             <Button onClick={onChangeSaveTo(0)}>p1</Button>
             <Button onClick={onChangeSaveTo(1)}>p2</Button>
@@ -418,20 +479,37 @@ function App() {
             <Back onClick={() => setShowSettings(false)} />
             <Header>Settings:</Header>
             <Group l={true}>
-              <Button onClick={onChangeCalibrate("calibration")}>
-                Calibrate strokes
-              </Button>
-              <Button onClick={onChangeCalibrate("nameOption")}>
-                Name option
-              </Button>
+              <Line>
+                <Button onClick={onChangeCalibrate("calibration")}>
+                  Calibrate strokes
+                </Button>
+                <QuestionMark onClick={() => setHelp("calibrateStrokes")} />
+              </Line>
+              <Line>
+                <Button onClick={onChangeCalibrate("nameOption")}>
+                  Name option
+                </Button>
+                <QuestionMark onClick={() => setHelp("nameOption")} />
+              </Line>
             </Group>
             <Separator />
             <Group l={true}>
-              <Button onClick={onChangeSendFile}>Update firmware</Button>
+              <Line>
+                <Button onClick={onChangeSendFile}>Update firmware</Button>
+                <QuestionMark onClick={() => setHelp("firmwareUpdate")} />
+              </Line>
             </Group>
           </>
         )}
       </SettingsPanel>
+      {help && helpMessages[help] && (
+        <WrapperHelp onClick={() => setHelp(null)}>
+          <WindowHelp>
+            <TextHelp>{helpMessages[help]}</TextHelp>
+            <Button onClick={() => setHelp(null)}>Ok</Button>
+          </WindowHelp>
+        </WrapperHelp>
+      )}
     </Wrapper>
   );
 }
